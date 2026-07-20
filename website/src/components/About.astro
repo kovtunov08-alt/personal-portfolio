@@ -1,0 +1,86 @@
+---
+import { profile } from '../data/profile'
+---
+
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="container about-grid">
+    <div>
+      <p class="section-label">Обо мне</p>
+      <h2 id="about-title" class="section-title">Делаю продукты, которыми хочется пользоваться</h2>
+    </div>
+    <div class="about-copy card">
+      {
+        profile.bio.split('\n').map((paragraph) => (
+          <p>{paragraph}</p>
+        ))
+      }
+      <div class="about-links">
+        <a href={profile.social.github} target="_blank" rel="noreferrer noopener">GitHub</a>
+        <a href={profile.social.linkedin} target="_blank" rel="noreferrer noopener">LinkedIn</a>
+        <a href={profile.social.telegram} target="_blank" rel="noreferrer noopener">Telegram</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .about-copy {
+    padding: 2rem;
+    border-color: var(--border-subtle);
+  }
+
+  .about-copy p {
+    margin: 0 0 1rem;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+
+  .about-copy p:last-of-type {
+    margin-bottom: 1.5rem;
+  }
+
+  .about-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .about-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0 0.95rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    font-weight: 600;
+    color: #1e293b;
+    background: #f8fafc;
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .about-links a:hover,
+  .about-links a:focus-visible {
+    border-color: var(--accent);
+    background: #eff6ff;
+    color: var(--accent-strong);
+    outline: none;
+  }
+
+  @media (min-width: 900px) {
+    .about-grid {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 3rem;
+    }
+  }
+</style>

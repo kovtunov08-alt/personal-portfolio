@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'Grtsk';
+  font-weight: 100 700;
+  font-stretch: 75% 125%;
+  font-style: normal;
+  font-display: swap;
+  src:
+    url('/fonts/Grtsk-Variable.woff2') format('woff2 supports variations'),
+    url('/fonts/Grtsk-Variable.woff2') format('woff2');
+}
