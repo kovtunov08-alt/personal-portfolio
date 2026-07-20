@@ -1,0 +1,266 @@
+---
+import { profile } from '../data/profile'
+
+const allowedTypes = [
+  'application/pdf',
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+]
+const maxFileSizeMb = 5
+---
+
+<section id="contact" class="section" aria-labelledby="contact-title">
+  <div class="container contact-grid">
+    <div>
+      <p class="section-label">Контакты</p>
+      <h2 id="contact-title" class="section-title">Давайте обсудим ваш проект</h2>
+      <p class="section-lead">
+        Оставьте сообщение и при необходимости прикрепите бриф, резюме или референсы — до {maxFileSizeMb} МБ.
+      </p>
+      <div class="contact-direct card">
+        <p>Прямой email</p>
+        <a href={`mailto:${profile.email}`}>{profile.email}</a>
+      </div>
+    </div>
+
+    <form
+      class="contact-form card"
+      id="contact-form"
+      method="post"
+      action="/api/contact"
+      enctype="multipart/form-data"
+      novalidate
+    >
+      <div class="field">
+        <label for="name">Имя</label>
+        <input id="name" name="name" type="text" autocomplete="name" required minlength="2" />
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required />
+      </div>
+
+      <div class="field">
+        <label for="message">Сообщение</label>
+        <textarea id="message" name="message" rows="5" required minlength="10"></textarea>
+      </div>
+
+      <div class="field">
+        <label for="attachment">Файл (необязательно)</label>
+        <input
+          id="attachment"
+          name="attachment"
+          type="file"
+          accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx"
+        />
+        <p class="hint">PDF, PNG, JPG, WEBP, DOC, DOCX — до {maxFileSizeMb} МБ</p>
+      </div>
+
+      <button class="submit" type="submit">Отправить</button>
+      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<script
+  is:inline
+  define:vars={{
+    allowedTypes,
+    maxFileSizeBytes: maxFileSizeMb * 1024 * 1024,
+  }}
+>
+  const form = document.getElementById('contact-form')
+  const status = document.getElementById('form-status')
+
+  if (form instanceof HTMLFormElement && status instanceof HTMLElement) {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault()
+      status.textContent = ''
+      status.className = 'form-status'
+
+      const formData = new FormData(form)
+      const file = formData.get('attachment')
+
+      if (file instanceof File && file.size > 0) {
+        if (file.size > maxFileSizeBytes) {
+          status.textContent = `Файл слишком большой. Максимум ${maxFileSizeBytes / 1024 / 1024} МБ.`
+          status.classList.add('is-error')
+          return
+        }
+
+        if (file.type && !allowedTypes.includes(file.type)) {
+          status.textContent = 'Неподдерживаемый тип файла.'
+          status.classList.add('is-error')
+          return
+        }
+      }
+
+      const submitButton = form.querySelector('button[type="submit"]')
+      if (submitButton instanceof HTMLButtonElement) {
+        submitButton.disabled = true
+        submitButton.textContent = 'Отправка...'
+      }
+
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          body: formData,
+        })
+
+        const payload = await response.json()
+
+        if (!response.ok) {
+          throw new Error(payload.error ?? 'Не удалось отправить сообщение.')
+        }
+
+        form.reset()
+        status.textContent = 'Спасибо! Сообщение отправлено.'
+        status.classList.add('is-success')
+      } catch (error) {
+        status.textContent =
+          error instanceof Error ? error.message : 'Не удалось отправить сообщение.'
+        status.classList.add('is-error')
+      } finally {
+        if (submitButton instanceof HTMLButtonElement) {
+          submitButton.disabled = false
+          submitButton.textContent = 'Отправить'
+        }
+      }
+    })
+  }
+</script>
+
+<style>
+  .contact-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .contact-direct {
+    padding: 1.25rem 1.5rem;
+    border-color: var(--border-subtle);
+    background: var(--bg);
+  }
+
+  .contact-direct p {
+    margin: 0 0 0.35rem;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .contact-direct a {
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--accent-strong);
+    transition: color 0.2s ease;
+  }
+
+  .contact-direct a:hover,
+  .contact-direct a:focus-visible {
+    color: var(--accent);
+    outline: none;
+  }
+
+  .contact-form {
+    display: grid;
+    gap: 1rem;
+    padding: 1.75rem;
+    border-color: var(--border-subtle);
+  }
+
+  .field {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  label {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--accent);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.85rem;
+    background: var(--bg-input);
+    color: var(--text);
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+    outline: none;
+  }
+
+  .hint {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+
+  .submit {
+    min-height: 3rem;
+    border: 1px solid var(--accent);
+    border-radius: 999px;
+    background: var(--accent);
+    color: var(--accent-on);
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      transform 0.15s ease;
+  }
+
+  .submit:hover:not(:disabled) {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+    transform: translateY(-1px);
+  }
+
+  button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .submit:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+
+  .form-status {
+    margin: 0;
+    min-height: 1.25rem;
+    font-size: 0.95rem;
+  }
+
+  .form-status.is-success {
+    color: #1d4ed8;
+    font-weight: 600;
+  }
+
+  .form-status.is-error {
+    color: var(--danger);
+  }
+
+  @media (min-width: 900px) {
+    .contact-grid {
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 3rem;
+    }
+  }
+</style>

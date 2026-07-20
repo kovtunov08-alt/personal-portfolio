@@ -1,0 +1,324 @@
+---
+import { profile } from '../data/profile'
+
+const navItems = [
+  { href: '#about', label: 'Обо мне' },
+  { href: '#projects', label: 'Проекты' },
+  { href: '#skills', label: 'Навыки' },
+  { href: '#contact', label: 'Контакты' },
+]
+---
+
+<header class="site-header" data-site-header>
+  <div class="container header-inner">
+    <a class="logo" href="/" aria-label={`${profile.name} — главная`}>
+      <span class="logo-mark" aria-hidden="true"></span>
+      <span>{profile.name.split(' ')[0]}</span>
+    </a>
+
+    <button
+      class="menu-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-menu-toggle
+    >
+      <span class="sr-only">Открыть меню</span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Основная навигация" data-site-nav>
+      {
+        navItems.map((item) => (
+          <a href={item.href} data-nav-link data-section-link>
+            {item.label}
+          </a>
+        ))
+      }
+      <a class="nav-cta" href="#contact" data-nav-link data-section-link>
+        Связаться
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector('[data-site-header]')
+  const toggle = document.querySelector('[data-menu-toggle]')
+  const nav = document.querySelector('[data-site-nav]')
+  const links = document.querySelectorAll('[data-nav-link]')
+  const sectionLinks = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>('[data-section-link]'),
+  )
+  const hero = document.querySelector('.hero-landing')
+
+  const setHeaderVisible = (visible: boolean) => {
+    if (!(header instanceof HTMLElement)) return
+
+    header.classList.toggle('is-visible', visible)
+    document.documentElement.classList.toggle('header-visible', visible)
+  }
+
+  if (hero instanceof HTMLElement && header instanceof HTMLElement) {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry) return
+        setHeaderVisible(!entry.isIntersecting)
+      },
+      { threshold: 0, rootMargin: '0px 0px -85% 0px' },
+    )
+
+    observer.observe(hero)
+  }
+
+  if (toggle instanceof HTMLButtonElement && nav instanceof HTMLElement) {
+    toggle.addEventListener('click', () => {
+      const isOpen = nav.classList.toggle('is-open')
+      toggle.setAttribute('aria-expanded', String(isOpen))
+    })
+
+    links.forEach((link) => {
+      link.addEventListener('click', () => {
+        nav.classList.remove('is-open')
+        toggle.setAttribute('aria-expanded', 'false')
+      })
+    })
+  }
+
+  const getSectionId = (href: string) => {
+    if (!href.startsWith('#')) return null
+    const id = href.slice(1).trim()
+    return id.length > 0 ? id : null
+  }
+
+  const sectionEntries = sectionLinks
+    .map((link) => {
+      const href = link.getAttribute('href')
+      if (!href) return null
+
+      const sectionId = getSectionId(href)
+      if (!sectionId) return null
+
+      const section = document.getElementById(sectionId)
+      if (!(section instanceof HTMLElement)) return null
+
+      return { sectionId, section }
+    })
+    .filter((entry): entry is { sectionId: string; section: HTMLElement } => Boolean(entry))
+
+  const setActiveSection = (sectionId: string | null) => {
+    sectionLinks.forEach((link) => {
+      const href = link.getAttribute('href')
+      const linkSectionId = href ? getSectionId(href) : null
+      const isActive = sectionId !== null && linkSectionId === sectionId
+
+      link.classList.toggle('is-active', isActive)
+
+      if (isActive) {
+        link.setAttribute('aria-current', 'page')
+      } else {
+        link.removeAttribute('aria-current')
+      }
+    })
+  }
+
+  if (sectionEntries.length > 0) {
+    const getHeaderOffset = () => {
+      if (!(header instanceof HTMLElement)) return 88
+      return Math.max(header.offsetHeight + 12, 72)
+    }
+
+    const updateActiveSectionByScroll = () => {
+      const headerOffset = getHeaderOffset()
+      let activeId = sectionEntries[0]?.sectionId ?? null
+
+      sectionEntries.forEach((entry) => {
+        const sectionTop = entry.section.getBoundingClientRect().top
+        if (sectionTop - headerOffset <= 0) {
+          activeId = entry.sectionId
+        }
+      })
+
+      setActiveSection(activeId)
+    }
+
+    let isTicking = false
+    const handleScroll = () => {
+      if (isTicking) return
+      isTicking = true
+
+      window.requestAnimationFrame(() => {
+        updateActiveSectionByScroll()
+        isTicking = false
+      })
+    }
+
+    updateActiveSectionByScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('resize', handleScroll)
+  }
+</script>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 20;
+    height: var(--header-height);
+    backdrop-filter: blur(16px);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    border-bottom: 1px solid var(--border);
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+    transition:
+      transform 0.35s ease,
+      opacity 0.35s ease;
+  }
+
+  :global(.has-hero) .site-header {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  :global(.has-hero) .site-header.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    gap: 1rem;
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .logo-mark {
+    width: 0.85rem;
+    height: 0.85rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-soft);
+  }
+
+  .menu-toggle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--bg);
+    color: var(--accent);
+    cursor: pointer;
+  }
+
+  .menu-toggle span:not(.sr-only) {
+    display: block;
+    width: 1.1rem;
+    height: 2px;
+    margin-inline: auto;
+    background: currentColor;
+    border-radius: 999px;
+  }
+
+  .site-nav {
+    position: fixed;
+    inset: var(--header-height) 1rem auto;
+    display: none;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    box-shadow: var(--shadow);
+  }
+
+  .site-nav.is-open {
+    display: flex;
+  }
+
+  .site-nav a {
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .site-nav a:hover,
+  .site-nav a:focus-visible {
+    color: var(--accent-on);
+    background: var(--accent);
+    outline: none;
+  }
+
+  .site-nav a.is-active {
+    color: var(--accent-on);
+    background: var(--accent);
+  }
+
+  .nav-cta {
+    margin-top: 0.25rem;
+    color: var(--accent-on) !important;
+    background: var(--accent) !important;
+    font-weight: 600;
+    text-align: center;
+    border: 1px solid var(--accent);
+  }
+
+  .nav-cta:hover,
+  .nav-cta:focus-visible {
+    background: var(--accent-strong) !important;
+    color: var(--accent-on) !important;
+  }
+
+  .nav-cta.is-active {
+    background: var(--accent-strong) !important;
+    border-color: var(--accent-strong);
+    color: var(--accent-on) !important;
+  }
+
+  @media (min-width: 768px) {
+    .menu-toggle {
+      display: none;
+    }
+
+    .site-nav {
+      position: static;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      gap: 0.25rem;
+    }
+
+    .nav-cta {
+      margin-top: 0;
+      margin-left: 0.5rem;
+    }
+  }
+</style>

@@ -1,0 +1,406 @@
+---
+import { profile } from '../data/profile'
+
+const socialLinks = [
+  { key: 'github', label: 'GitHub', href: profile.social.github },
+  { key: 'linkedin', label: 'LinkedIn', href: profile.social.linkedin },
+  { key: 'telegram', label: 'Telegram', href: profile.social.telegram },
+] as const
+
+const isVariantB = profile.heroVariant === 'B'
+---
+
+<section
+  class:list={['hero-landing', isVariantB ? 'hero-landing-b' : 'hero-landing-a']}
+  aria-labelledby="hero-title"
+>
+  <div class="container hero-shell">
+    <div class="hero-content">
+      <nav class="hero-nav" aria-label="Разделы первого экрана">
+        {
+          profile.nav.map((item) => (
+            <a href={item.href}>{item.label}</a>
+          ))
+        }
+      </nav>
+
+      <div class="hero-content-body">
+        <p class="hero-eyebrow">
+          {isVariantB
+            ? 'Продуктовый дизайн с инженерным мышлением'
+            : 'Продуктовый дизайн и frontend-разработка'}
+        </p>
+        <h1 id="hero-title" class="hero-title">
+          {profile.name}
+        </h1>
+        <p class="hero-role">{profile.title}</p>
+        <p class="hero-lead">{profile.tagline}</p>
+
+        <div class="hero-actions" role="group" aria-label="Основные действия">
+          <a class="btn btn-primary" href="#contact">Обсудить проект</a>
+          <a class="btn btn-secondary" href="#projects">Посмотреть кейсы</a>
+        </div>
+
+        <div class="hero-meta">
+          <span>{profile.location}</span>
+          <a href={`mailto:${profile.email}`}>{profile.email}</a>
+        </div>
+
+        <nav class="hero-socials" aria-label="Социальные сети">
+          {
+            socialLinks.map((link) => (
+              <a href={link.href} target="_blank" rel="noreferrer noopener">
+                {link.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </div>
+
+    <figure class="hero-visual" aria-hidden="true">
+      <div class="hero-visual-frame">
+        <img
+          class="hero-portrait"
+          src={profile.portrait}
+          alt=""
+          width={profile.portraitWidth}
+          height={profile.portraitHeight}
+          decoding="async"
+          fetchpriority="high"
+        />
+      </div>
+    </figure>
+  </div>
+</section>
+
+<style is:global>
+  .hero-landing {
+    position: relative;
+    width: 100%;
+    min-height: 100svh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    padding-block: clamp(4.4rem, 7.2vw, 5.8rem) clamp(3rem, 6vw, 4rem);
+    background:
+      radial-gradient(circle at 10% 12%, rgba(37, 99, 235, 0.14), transparent 36%),
+      radial-gradient(circle at 88% 92%, rgba(148, 163, 184, 0.2), transparent 35%),
+      #f8fafc;
+    --hero-nav-border: #cbd5e1;
+    --hero-nav-text: #1e293b;
+    --hero-nav-bg: rgba(255, 255, 255, 0.72);
+    --hero-nav-border-hover: #2563eb;
+    --hero-nav-bg-hover: #eff6ff;
+    --hero-nav-text-hover: #1d4ed8;
+    --hero-eyebrow: #2563eb;
+    --hero-title: #0f172a;
+    --hero-role: #334155;
+    --hero-lead: #475569;
+    --hero-meta: #64748b;
+    --hero-meta-link: #334155;
+    --hero-meta-link-hover: #1d4ed8;
+    --hero-social: #334155;
+    --hero-social-hover: #1d4ed8;
+    --btn-primary-bg: #2563eb;
+    --btn-primary-border: #2563eb;
+    --btn-primary-text: #f8fafc;
+    --btn-primary-bg-hover: #1d4ed8;
+    --btn-primary-border-hover: #1d4ed8;
+    --btn-secondary-bg: transparent;
+    --btn-secondary-border: #cbd5e1;
+    --btn-secondary-text: #1e293b;
+    --btn-secondary-bg-hover: #eff6ff;
+    --btn-secondary-border-hover: #2563eb;
+    --btn-secondary-text-hover: #1d4ed8;
+    --hero-frame-border: #e2e8f0;
+    --hero-frame-bg:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(248, 250, 252, 0.8)),
+      #f8fafc;
+    --hero-frame-shadow:
+      0 22px 44px rgba(15, 23, 42, 0.1),
+      0 1px 0 rgba(255, 255, 255, 0.8) inset;
+  }
+
+  .hero-landing-a {
+    background:
+      radial-gradient(circle at 10% 12%, rgba(37, 99, 235, 0.14), transparent 36%),
+      radial-gradient(circle at 88% 92%, rgba(148, 163, 184, 0.2), transparent 35%),
+      #f8fafc;
+  }
+
+  .hero-landing-b {
+    background:
+      radial-gradient(circle at 14% 18%, rgba(34, 211, 238, 0.2), transparent 36%),
+      radial-gradient(circle at 88% 82%, rgba(167, 139, 250, 0.22), transparent 35%),
+      linear-gradient(160deg, #0b1220 0%, #111827 55%, #0f172a 100%);
+    --hero-nav-border: rgba(148, 163, 184, 0.36);
+    --hero-nav-text: #e2e8f0;
+    --hero-nav-bg: rgba(30, 41, 59, 0.5);
+    --hero-nav-border-hover: #22d3ee;
+    --hero-nav-bg-hover: rgba(8, 47, 73, 0.55);
+    --hero-nav-text-hover: #67e8f9;
+    --hero-eyebrow: #67e8f9;
+    --hero-title: #f8fafc;
+    --hero-role: #cbd5e1;
+    --hero-lead: #94a3b8;
+    --hero-meta: #94a3b8;
+    --hero-meta-link: #e2e8f0;
+    --hero-meta-link-hover: #67e8f9;
+    --hero-social: #cbd5e1;
+    --hero-social-hover: #67e8f9;
+    --btn-primary-bg: #22d3ee;
+    --btn-primary-border: #22d3ee;
+    --btn-primary-text: #082f49;
+    --btn-primary-bg-hover: #67e8f9;
+    --btn-primary-border-hover: #67e8f9;
+    --btn-secondary-bg: rgba(15, 23, 42, 0.5);
+    --btn-secondary-border: rgba(148, 163, 184, 0.45);
+    --btn-secondary-text: #e2e8f0;
+    --btn-secondary-bg-hover: rgba(8, 47, 73, 0.45);
+    --btn-secondary-border-hover: #22d3ee;
+    --btn-secondary-text-hover: #67e8f9;
+    --hero-frame-border: rgba(148, 163, 184, 0.25);
+    --hero-frame-bg:
+      linear-gradient(180deg, rgba(15, 23, 42, 0.32), rgba(15, 23, 42, 0.7)),
+      #0f172a;
+    --hero-frame-shadow:
+      0 28px 56px rgba(2, 8, 23, 0.58),
+      0 0 0 1px rgba(34, 211, 238, 0.08) inset;
+  }
+
+  .hero-shell {
+    width: var(--container);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.82fr);
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .hero-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .hero-nav a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0 0.9rem;
+    border-radius: 999px;
+    border: 1px solid var(--hero-nav-border);
+    color: var(--hero-nav-text);
+    background: var(--hero-nav-bg);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition:
+      border-color 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .hero-nav a:hover,
+  .hero-nav a:focus-visible {
+    border-color: var(--hero-nav-border-hover);
+    background: var(--hero-nav-bg-hover);
+    color: var(--hero-nav-text-hover);
+    outline: none;
+  }
+
+  .hero-content {
+    max-width: 36rem;
+  }
+
+  .hero-content-body {
+    margin-top: 1.2rem;
+  }
+
+  .hero-eyebrow {
+    margin: 0 0 0.75rem;
+    color: var(--hero-eyebrow);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .hero-title {
+    margin: 0;
+    font-size: clamp(2rem, 5.3vw, 4rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    color: var(--hero-title);
+  }
+
+  .hero-role {
+    margin: 1rem 0 0;
+    color: var(--hero-role);
+    font-size: clamp(1rem, 2.2vw, 1.3rem);
+    font-weight: 600;
+  }
+
+  .hero-lead {
+    margin: 1rem 0 0;
+    color: var(--hero-lead);
+    font-size: clamp(1rem, 1.8vw, 1.14rem);
+    line-height: 1.68;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-top: 1.85rem;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.9rem;
+    padding: 0.55rem 1.25rem;
+    border-radius: 0.8rem;
+    border: 1px solid transparent;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      transform 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease;
+  }
+
+  .btn:hover,
+  .btn:focus-visible {
+    transform: translateY(-1px);
+    outline: none;
+  }
+
+  .btn-primary {
+    background: var(--btn-primary-bg);
+    border-color: var(--btn-primary-border);
+    color: var(--btn-primary-text);
+  }
+
+  .btn-primary:hover,
+  .btn-primary:focus-visible {
+    background: var(--btn-primary-bg-hover);
+    border-color: var(--btn-primary-border-hover);
+  }
+
+  .btn-secondary {
+    background: var(--btn-secondary-bg);
+    border-color: var(--btn-secondary-border);
+    color: var(--btn-secondary-text);
+  }
+
+  .btn-secondary:hover,
+  .btn-secondary:focus-visible {
+    border-color: var(--btn-secondary-border-hover);
+    color: var(--btn-secondary-text-hover);
+    background: var(--btn-secondary-bg-hover);
+  }
+
+  .hero-meta {
+    margin-top: 1.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.2rem;
+    color: var(--hero-meta);
+    font-size: 0.94rem;
+  }
+
+  .hero-meta a {
+    color: var(--hero-meta-link);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .hero-meta a:hover,
+  .hero-meta a:focus-visible {
+    color: var(--hero-meta-link-hover);
+    outline: none;
+  }
+
+  .hero-socials {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.7rem;
+  }
+
+  .hero-socials a {
+    color: var(--hero-social);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .hero-socials a:hover,
+  .hero-socials a:focus-visible {
+    color: var(--hero-social-hover);
+    text-decoration: underline;
+    text-underline-offset: 0.22em;
+    outline: none;
+  }
+
+  .hero-visual {
+    margin: 0;
+    justify-self: end;
+    width: min(100%, 32rem);
+  }
+
+  .hero-visual-frame {
+    border-radius: 1.4rem;
+    border: 1px solid var(--hero-frame-border);
+    background: var(--hero-frame-bg);
+    box-shadow: var(--hero-frame-shadow);
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+  }
+
+  .hero-portrait {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
+
+  @media (max-width: 960px) {
+    .hero-shell {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .hero-content {
+      max-width: 100%;
+    }
+
+    .hero-visual {
+      justify-self: start;
+      width: min(100%, 26rem);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-landing {
+      padding-block: 4.3rem 2.5rem;
+    }
+
+    .hero-nav {
+      gap: 0.45rem;
+    }
+
+    .hero-nav a {
+      min-height: 2.2rem;
+      padding: 0 0.72rem;
+      font-size: 0.82rem;
+    }
+  }
+</style>
