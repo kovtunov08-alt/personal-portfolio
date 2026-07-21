@@ -1,6 +1,9 @@
 ---
 import { profile } from '../data/profile'
 
+const base = import.meta.env.BASE_URL
+const portraitSrc = `${base}${profile.portrait.replace(/^\//, '')}`
+
 const socialLinks = [
   { key: 'github', label: 'GitHub', href: profile.social.github },
   { key: 'linkedin', label: 'LinkedIn', href: profile.social.linkedin },
@@ -60,7 +63,7 @@ const isVariantB = profile.heroVariant === 'B'
       <div class="hero-visual-frame">
         <img
           class="hero-portrait"
-          src={profile.portrait}
+          src={portraitSrc}
           alt=""
           width={profile.portraitWidth}
           height={profile.portraitHeight}

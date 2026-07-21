@@ -1,15 +1,9 @@
 ---
 import { profile } from '../data/profile'
+import { FORMSPREE_ID } from '../data/formspree'
 
-const allowedTypes = [
-  'application/pdf',
-  'image/png',
-  'image/jpeg',
-  'image/webp',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-]
-const maxFileSizeMb = 5
+const formspreeId = import.meta.env.PUBLIC_FORMSPREE_ID?.trim() || FORMSPREE_ID
+const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` : ''
 ---
 
 <section id="contact" class="section" aria-labelledby="contact-title">
@@ -26,113 +20,99 @@ const maxFileSizeMb = 5
       </div>
     </div>
 
-    <form
-      class="contact-form card"
-      id="contact-form"
-      method="post"
-      action="/api/contact"
-      enctype="multipart/form-data"
-      novalidate
-    >
-      <div class="field">
-        <label for="name">Имя</label>
-        <input id="name" name="name" type="text" autocomplete="name" required minlength="2" />
-      </div>
+    {
+      formspreeEndpoint ? (
+        <form
+          class="contact-form card"
+          id="contact-form"
+          method="post"
+          action={formspreeEndpoint}
+          novalidate
+        >
+          <div class="field">
+            <label for="name">Имя</label>
+            <input id="name" name="name" type="text" autocomplete="name" required minlength="2" />
+          </div>
 
-      <div class="field">
-        <label for="email">Email</label>
-        <input id="email" name="email" type="email" autocomplete="email" required />
-      </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required />
+          </div>
 
-      <div class="field">
-        <label for="message">Сообщение</label>
-        <textarea id="message" name="message" rows="5" required minlength="10"></textarea>
-      </div>
+          <div class="field">
+            <label for="message">Сообщение</label>
+            <textarea id="message" name="message" rows="5" required minlength="10"></textarea>
+          </div>
 
-      <div class="field">
-        <label for="attachment">Файл (необязательно)</label>
-        <input
-          id="attachment"
-          name="attachment"
-          type="file"
-          accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx"
-        />
-        <p class="hint">PDF, PNG, JPG, WEBP, DOC, DOCX — до {maxFileSizeMb} МБ</p>
-      </div>
-
-      <button class="submit" type="submit">Отправить</button>
-      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
-    </form>
+          <button class="submit" type="submit">Отправить</button>
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+        </form>
+      ) : (
+        <div class="contact-form card contact-form-fallback" role="status">
+          <p>
+            Форма скоро будет подключена. Пока напишите напрямую на
+            <a href={`mailto:${profile.email}`}>{profile.email}</a>.
+          </p>
+        </div>
+      )
+    }
   </div>
 </section>
 
-<script
-  is:inline
-  define:vars={{
-    allowedTypes,
-    maxFileSizeBytes: maxFileSizeMb * 1024 * 1024,
-  }}
->
-  const form = document.getElementById('contact-form')
-  const status = document.getElementById('form-status')
+{
+  formspreeEndpoint && (
+    <script is:inline define:vars={{ formspreeEndpoint }}>
+      const form = document.getElementById('contact-form')
+      const status = document.getElementById('form-status')
 
-  if (form instanceof HTMLFormElement && status instanceof HTMLElement) {
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault()
-      status.textContent = ''
-      status.className = 'form-status'
+      if (form instanceof HTMLFormElement && status instanceof HTMLElement) {
+        form.addEventListener('submit', async (event) => {
+          event.preventDefault()
+          status.textContent = ''
+          status.className = 'form-status'
 
-      const formData = new FormData(form)
-      const file = formData.get('attachment')
+          const submitButton = form.querySelector('button[type="submit"]')
+          if (submitButton instanceof HTMLButtonElement) {
+            submitButton.disabled = true
+            submitButton.textContent = 'Отправка...'
+          }
 
-      if (file instanceof File && file.size > 0) {
-        if (file.size > maxFileSizeBytes) {
-          status.textContent = `Файл слишком большой. Максимум ${maxFileSizeBytes / 1024 / 1024} МБ.`
-          status.classList.add('is-error')
-          return
-        }
+          try {
+            const response = await fetch(formspreeEndpoint, {
+              method: 'POST',
+              body: new FormData(form),
+              headers: { Accept: 'application/json' },
+            })
 
-        if (file.type && !allowedTypes.includes(file.type)) {
-          status.textContent = 'Неподдерживаемый тип файла.'
-          status.classList.add('is-error')
-          return
-        }
-      }
+            const payload = await response.json().catch(() => ({}))
 
-      const submitButton = form.querySelector('button[type="submit"]')
-      if (submitButton instanceof HTMLButtonElement) {
-        submitButton.disabled = true
-        submitButton.textContent = 'Отправка...'
-      }
+            if (!response.ok) {
+              const errors = payload.errors
+              const firstError =
+                Array.isArray(errors) && errors[0]?.message
+                  ? errors[0].message
+                  : payload.error
+              throw new Error(firstError ?? 'Не удалось отправить сообщение.')
+            }
 
-      try {
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          body: formData,
+            form.reset()
+            status.textContent = 'Спасибо! Сообщение отправлено.'
+            status.classList.add('is-success')
+          } catch (error) {
+            status.textContent =
+              error instanceof Error ? error.message : 'Не удалось отправить сообщение.'
+            status.classList.add('is-error')
+          } finally {
+            if (submitButton instanceof HTMLButtonElement) {
+              submitButton.disabled = false
+              submitButton.textContent = 'Отправить'
+            }
+          }
         })
-
-        const payload = await response.json()
-
-        if (!response.ok) {
-          throw new Error(payload.error ?? 'Не удалось отправить сообщение.')
-        }
-
-        form.reset()
-        status.textContent = 'Спасибо! Сообщение отправлено.'
-        status.classList.add('is-success')
-      } catch (error) {
-        status.textContent =
-          error instanceof Error ? error.message : 'Не удалось отправить сообщение.'
-        status.classList.add('is-error')
-      } finally {
-        if (submitButton instanceof HTMLButtonElement) {
-          submitButton.disabled = false
-          submitButton.textContent = 'Отправить'
-        }
       }
-    })
-  }
-</script>
+    </script>
+  )
+}
 
 <style>
   .contact-grid {
@@ -176,6 +156,17 @@ const maxFileSizeMb = 5
     border-color: var(--border-subtle);
   }
 
+  .contact-form-fallback p {
+    margin: 0;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+
+  .contact-form-fallback a {
+    color: var(--accent-strong);
+    font-weight: 600;
+  }
+
   .field {
     display: grid;
     gap: 0.45rem;
@@ -205,12 +196,6 @@ const maxFileSizeMb = 5
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-soft);
     outline: none;
-  }
-
-  .hint {
-    margin: 0;
-    color: var(--text-muted);
-    font-size: 0.85rem;
   }
 
   .submit {

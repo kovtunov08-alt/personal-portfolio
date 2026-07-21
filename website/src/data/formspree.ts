@@ -1,0 +1,3 @@
+// Formspree form ID (public, visible in page HTML). Used by ContactForm.
+// Optional local override: website/.env PUBLIC_FORMSPREE_ID=...
+export const FORMSPREE_ID = 'xwvgbggo'

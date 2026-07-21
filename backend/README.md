@@ -4,7 +4,7 @@ The backend owns the API, authentication, integrations, persistence, and server-
 
 ## Project Surface Status
 
-**Deferred** for `personal-portfolio`. The MVP portfolio runs as a static Astro site with a Vercel serverless contact endpoint. Activate backend when you need auth, a CMS API, or persistent file storage beyond local/Vercel uploads.
+**Deferred** for `personal-portfolio`. The MVP portfolio runs as a static Astro site on GitHub Pages with Formspree for the contact form. Activate backend when you need auth, a CMS API, or persistent file storage.
 
 ## Stack
 

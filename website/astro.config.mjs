@@ -1,9 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config'
 
-// ponytail: pure static build for Vercel CDN. Committed `.vercel/output` kept routing `/_astro/*`
-// to a dead serverless function (CSS 500). Custom assets dir sidesteps that stale route.
+// GitHub Pages project site: https://kovtunov08-alt.github.io/personal-portfolio/
 export default defineConfig({
+  site: 'https://kovtunov08-alt.github.io',
+  base: '/personal-portfolio',
   server: {
     host: '127.0.0.1',
     port: 4321,

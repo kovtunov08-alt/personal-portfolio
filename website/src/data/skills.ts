@@ -10,7 +10,7 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     title: 'Tools',
-    items: ['Git', 'GitHub', 'Cursor', 'Vercel'],
+    items: ['Git', 'GitHub', 'Cursor', 'GitHub Pages'],
   },
   {
     title: 'Currently Learning',

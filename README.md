@@ -9,12 +9,13 @@ Personal portfolio website built from the [Vibe Coding Template](https://github.
 | Slug | `personal-portfolio` |
 | Product | Personal portfolio website |
 | First journey | Visitor opens homepage → learns who I am → sees projects → reads skills → contacts me |
-| Active surface | `website` (Astro, responsive SSG + contact API) |
-| Deferred | `webapp`, `backend`, `mobile`, production deploy |
-| File uploads | Contact form attachment via `/api/contact` (local `.data/contact-uploads/` in dev; Vercel serverless in production) |
+| Active surface | `website` (Astro SSG + Formspree contact form) |
+| Deferred | `webapp`, `backend`, `mobile` |
+| Contact form | Formspree (`website/src/data/formspree.ts`) |
 | Real-time | Not needed |
-| Deployment | Local now; **Vercel** after MVP (adapter: `@astrojs/vercel`) |
-| Git remote | Not configured yet |
+| Deployment | **GitHub Pages** via Actions (same pattern as Northern Studio) |
+| Live site | https://kovtunov08-alt.github.io/personal-portfolio/ |
+| Git remote | https://github.com/kovtunov08-alt/personal-portfolio |
 
 ### Run locally
 
@@ -24,9 +25,20 @@ bun install
 bun run dev:website
 ```
 
-Open http://localhost:4321
+Open http://127.0.0.1:4321/personal-portfolio/
 
 Customize copy in `website/src/data/profile.ts`, `website/src/data/skills.ts`, and `website/src/content/projects/`.
+
+### Contact form (Formspree)
+
+Formspree form ID is in `website/src/data/formspree.ts` (it is public — visible in page HTML).
+Optional local override: copy `website/.env.example` → `website/.env` and set `PUBLIC_FORMSPREE_ID`.
+
+### Deploy
+
+Push to `main` — workflow `.github/workflows/deploy-pages.yml` builds `website/` and publishes to GitHub Pages.
+
+First-time Pages setup (once): repo **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 
 ---
 
