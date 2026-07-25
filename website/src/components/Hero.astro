@@ -31,7 +31,6 @@ const lastName = restName.join(' ')
           <span class="hero-title-first">{firstName}</span>
           {lastName ? <span class="hero-title-last">{lastName}</span> : null}
         </h1>
-        <p class="hero-role">{profile.title}</p>
         <p class="hero-lead">{profile.tagline}</p>
 
         <div class="hero-actions" role="group" aria-label="Основные действия">
@@ -47,7 +46,7 @@ const lastName = restName.join(' ')
         <nav class="hero-socials" aria-label="Социальные сети">
           {
             socialLinks.map((link) => (
-              <a href={link.href} target="_blank" rel="noreferrer noopener" data-magnetic>
+              <a href={link.href} target="_blank" rel="noreferrer noopener">
                 {link.label}
               </a>
             ))
@@ -157,14 +156,6 @@ const lastName = restName.join(' ')
 
   .hero-title-last {
     font-weight: 400;
-  }
-
-  .hero-role {
-    margin: 1.1rem 0 0;
-    color: var(--color-steel);
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    font-weight: 300;
-    letter-spacing: -0.01em;
   }
 
   .hero-lead {

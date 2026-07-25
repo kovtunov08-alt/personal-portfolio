@@ -16,7 +16,7 @@ const navItems = [
   <div class="container header-inner">
     <a class="logo" href={homeHref} aria-label={`${profile.name} — главная`}>
       <span class="logo-mark" aria-hidden="true"></span>
-      <span>{profile.name.split(' ')[0]}</span>
+      <span class="logo-text">{profile.name.split(' ')[0]}</span>
     </a>
 
     <button
@@ -252,6 +252,32 @@ const navItems = [
     height: 0.55rem;
     border-radius: 999px;
     background: var(--color-almost-white);
+    transition: background-color 0.2s ease;
+  }
+
+  .logo-text {
+    display: inline-block;
+    text-decoration: none;
+    text-underline-offset: 0.25em;
+    transition:
+      transform 0.2s ease,
+      text-decoration-color 0.2s ease;
+  }
+
+  .logo:hover .logo-mark,
+  .logo:focus-visible .logo-mark {
+    background: var(--accent);
+  }
+
+  .logo:hover .logo-text,
+  .logo:focus-visible .logo-text {
+    transform: translateY(-0.12em);
+    text-decoration: underline;
+    outline: none;
+  }
+
+  .logo:focus-visible {
+    outline: none;
   }
 
   .menu-toggle {

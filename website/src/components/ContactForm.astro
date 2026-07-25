@@ -15,8 +15,17 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
         Если у вас есть вопросы, предложения или вы хотите обсудить сотрудничество — буду рад вашему сообщению.
       </p>
       <div class="contact-direct">
-        <p>Прямой email</p>
-        <a href={`mailto:${profile.email}`} data-magnetic>{profile.email}</a>
+        <p class="contact-direct-heading">Контакты</p>
+        <div class="contact-direct-item">
+          <p>Прямой email</p>
+          <a href={`mailto:${profile.email}`} data-magnetic>{profile.email}</a>
+        </div>
+        <div class="contact-direct-item">
+          <p>Telegram</p>
+          <a href={profile.social.telegram} target="_blank" rel="noopener noreferrer" data-magnetic>
+            @{profile.social.telegram.replace('https://t.me/', '')}
+          </a>
+        </div>
       </div>
     </div>
 
@@ -123,11 +132,22 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
   }
 
   .contact-direct {
+    display: grid;
+    gap: 1rem;
     padding: 1.25rem 0;
     border-top: 1px solid var(--border-subtle);
   }
 
-  .contact-direct p {
+  .contact-direct-heading {
+    margin: 0;
+    color: var(--color-almost-white);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .contact-direct-item p {
     margin: 0 0 0.35rem;
     color: var(--color-ash);
     font-size: 0.75rem;
@@ -135,7 +155,7 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
     letter-spacing: 0.12em;
   }
 
-  .contact-direct a {
+  .contact-direct-item a {
     font-size: 1.1rem;
     font-weight: 400;
     text-decoration: none;
@@ -144,8 +164,8 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
     transition: border-color 0.2s ease;
   }
 
-  .contact-direct a:hover,
-  .contact-direct a:focus-visible {
+  .contact-direct-item a:hover,
+  .contact-direct-item a:focus-visible {
     border-bottom-color: var(--color-almost-white);
     outline: none;
   }
