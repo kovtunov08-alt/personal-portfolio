@@ -1,8 +1,8 @@
 ---
 import { profile } from '../data/profile'
+import { withBase } from '../lib/withBase'
 
-const base = import.meta.env.BASE_URL
-const portraitSrc = `${base}${profile.portrait.replace(/^\//, '')}`
+const portraitSrc = withBase(profile.portrait)
 
 const socialLinks = [
   { key: 'github', label: 'GitHub', href: profile.social.github },

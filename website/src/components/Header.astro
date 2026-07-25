@@ -1,7 +1,8 @@
 ---
 import { profile } from '../data/profile'
+import { withBase } from '../lib/withBase'
 
-const base = import.meta.env.BASE_URL
+const homeHref = withBase()
 
 const navItems = [
   { href: '#about', label: 'Обо мне' },
@@ -13,7 +14,7 @@ const navItems = [
 
 <header class="site-header" data-site-header>
   <div class="container header-inner">
-    <a class="logo" href={base} aria-label={`${profile.name} — главная`}>
+    <a class="logo" href={homeHref} aria-label={`${profile.name} — главная`}>
       <span class="logo-mark" aria-hidden="true"></span>
       <span>{profile.name.split(' ')[0]}</span>
     </a>
