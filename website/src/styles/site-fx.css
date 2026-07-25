@@ -1,0 +1,61 @@
+/* Site motion polish: magnetic, spotlight, reveal, form focus/success */
+
+.fx-spot-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  background: radial-gradient(
+    circle 190px at var(--spot-x, 50%) var(--spot-y, 50%),
+    color-mix(in srgb, var(--accent) 34%, transparent),
+    transparent 70%
+  );
+}
+
+.fx-spot-layer.is-on {
+  opacity: 1;
+}
+
+[data-spotlight] {
+  isolation: isolate;
+}
+
+[data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 1.15rem, 0);
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s ease;
+  will-change: opacity, transform;
+}
+
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.contact-form.fx-form-live input:focus-visible,
+.contact-form.fx-form-live textarea:focus-visible {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 0 4px var(--accent-soft);
+}
+
+.contact-form.fx-form-live .submit.is-fx-success {
+  background: var(--accent-medium);
+  border-color: var(--accent-border-hover);
+  color: var(--color-lavender-mist, var(--text));
+}

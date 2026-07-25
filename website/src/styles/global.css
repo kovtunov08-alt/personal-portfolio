@@ -7,35 +7,59 @@
 }
 
 :root {
-  color-scheme: light;
-  --page-bg: #f8fafc;
-  --bg: #ffffff;
-  --bg-elevated: #f1f5f9;
-  --bg-input: #ffffff;
-  --bg-card: #ffffff;
-  --border: #dbe3ee;
-  --border-subtle: #e2e8f0;
-  --text: #0f172a;
-  --text-muted: #475569;
-  --accent: #2563eb;
-  --accent-strong: #1d4ed8;
-  --accent-soft: rgba(37, 99, 235, 0.12);
-  --accent-medium: rgba(37, 99, 235, 0.2);
-  --accent-on: #f8fafc;
-  --danger: #b91c1c;
-  --radius: 1rem;
-  --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
-  --container: min(1120px, calc(100% - 2rem));
-  --header-height: 4.5rem;
-  --corner-pad: clamp(1.25rem, 3vw, 2.5rem);
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
+  color-scheme: dark;
+
+  /* dope.security — Colors */
+  --color-near-black: #090909;
+  --color-almost-white: #f7f9fa;
+  --color-soft-white: #f0f0f0;
+  --color-steel: #828384;
+  --color-graphite: #474747;
+  --color-iron: #423738;
+  --color-ash: #6b6b6b;
+  --color-signal-violet: #af50ff;
+  --color-lavender-mist: #e1bdff;
+
+  /* Mapped aliases used across components */
+  --page-bg: var(--color-near-black);
+  --bg: var(--color-near-black);
+  --bg-elevated: #121212;
+  --bg-input: rgba(247, 249, 250, 0.04);
+  --bg-card: transparent;
+  --border: rgba(247, 249, 250, 0.2);
+  --border-subtle: rgba(247, 249, 250, 0.12);
+  --text: var(--color-almost-white);
+  --text-muted: var(--color-steel);
+  --accent: var(--color-signal-violet);
+  --accent-strong: #9a3eef;
+  --accent-soft: rgba(175, 80, 255, 0.16);
+  --accent-medium: rgba(175, 80, 255, 0.28);
+  --accent-on: var(--color-almost-white);
+  --accent-border: rgba(225, 189, 255, 0.34);
+  --accent-border-hover: rgba(225, 189, 255, 0.5);
+  --danger: #e57373;
+
+  /* Typography */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-display: 'Lora', ui-serif, Georgia, 'Times New Roman', serif;
+
+  /* Layout */
+  --radius: 19.2px;
+  --radius-cards: 19.2px;
+  --radius-buttons: 8px;
+  --radius-pills: 1584px;
+  --radius-small: 6px;
+  --shadow: none;
+  --container: min(1200px, calc(100% - 2rem));
+  --header-height: 3rem;
+  --section-gap: 7.5rem;
+  --card-padding: 2.5rem;
+  --corner-pad: clamp(1.25rem, 3vw, 2.5rem);
+
+  font-family: var(--font-sans);
+  font-weight: 400;
   background: var(--page-bg);
   color: var(--text);
   scroll-behavior: smooth;
@@ -56,17 +80,9 @@ html.has-hero.header-visible {
 body {
   margin: 0;
   min-height: 100vh;
-  line-height: 1.6;
-  background:
-    radial-gradient(circle at 12% 8%, rgba(37, 99, 235, 0.08), transparent 30%),
-    radial-gradient(circle at 88% 92%, rgba(148, 163, 184, 0.16), transparent 34%),
-    var(--page-bg);
-}
-
-body.has-hero {
-  background:
-    radial-gradient(circle at 50% 20%, rgba(37, 99, 235, 0.06), transparent 40%),
-    var(--page-bg);
+  line-height: 1.5;
+  background: var(--page-bg);
+  color: var(--text);
 }
 
 body.has-hero main {
@@ -96,22 +112,195 @@ textarea {
 }
 
 .section {
-  padding-block: 5rem;
+  padding-block: var(--section-gap);
 }
 
 .section-label {
-  margin: 0 0 0.75rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  margin: 0 0 1rem;
+  font-family: var(--font-mono);
+  font-size: clamp(0.7rem, 1.8vw, 0.875rem);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  line-height: 1.2;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--color-soft-white);
+}
+
+.section-stamp {
+  --stamp-color: var(--color-soft-white);
+  --sf-track: 0.2em;
+
+  margin: 0 0 1.5rem;
+  font-family: var(--font-mono);
+  font-size: clamp(1.35rem, 5.5vw, 4.625rem);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--stamp-color);
+  overflow-wrap: anywhere;
+}
+
+.hero-eyebrow[data-split-flap] {
+  --sf-track: 0.02em;
+}
+
+[data-split-flap].is-sf-ready {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  letter-spacing: 0;
+  gap: 0;
+}
+
+.sf-word {
+  position: relative;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: baseline;
+  /* Keep sf-word-rule z-index local so the strike doesn't paint over the fixed header */
+  isolation: isolate;
+}
+
+.sf-word-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  z-index: 20;
+  height: 2px;
+  background: #000;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.sf-cell {
+  position: relative;
+  display: inline-block;
+  height: 1em;
+  line-height: 1;
+  margin-right: var(--sf-track, 0);
+  vertical-align: baseline;
+  perspective: 520px;
+  color: inherit;
+  z-index: 1;
+}
+
+.sf-word .sf-cell:nth-last-child(2) {
+  margin-right: 0;
+}
+
+.sf-cell.is-space {
+  margin-right: calc(var(--sf-track, 0) + 0.28em);
+  width: 0.28em;
+  perspective: none;
+}
+
+.sf-sizer {
+  display: block;
+  visibility: hidden;
+  height: 1em;
+  line-height: 1;
+  white-space: pre;
+}
+
+.sf-stage {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.sf-half {
+  position: absolute;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  background: var(--page-bg);
+}
+
+.sf-half-top {
+  top: 0;
+  height: 50%;
+  z-index: 1;
+}
+
+.sf-half-bottom {
+  bottom: 0;
+  height: 50%;
+  z-index: 1;
+}
+
+.sf-glyph {
+  display: block;
+  height: 200%;
+  line-height: 1;
+  white-space: pre;
+  text-align: center;
+  color: inherit;
+}
+
+.sf-half-bottom .sf-glyph {
+  transform: translateY(-50%);
+}
+
+.sf-flipper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 50%;
+  z-index: 4;
+  transform-origin: center bottom;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.sf-flipper-face {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--page-bg);
+}
+
+.sf-flipper-front {
+  transform: rotateX(0deg);
+}
+
+.sf-flipper-back {
+  transform: rotateX(180deg);
+}
+
+.sf-flipper-back .sf-glyph {
+  transform: translateY(-50%);
+}
+
+.sf-flipper.is-flipping {
+  animation: sf-flip var(--sf-flip-ms, 70ms) linear forwards;
+}
+
+@keyframes sf-flip {
+  from {
+    transform: rotateX(0deg);
+  }
+  to {
+    transform: rotateX(-180deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sf-flipper.is-flipping {
+    animation: none;
+  }
 }
 
 .section-title {
   margin: 0 0 1rem;
-  font-size: clamp(2rem, 4vw, 3rem);
-  line-height: 1.1;
+  font-size: clamp(1.75rem, 3.5vw, 3rem);
+  font-weight: 300;
+  line-height: 1.15;
   letter-spacing: -0.03em;
   color: var(--text);
 }
@@ -121,24 +310,115 @@ textarea {
   max-width: 42rem;
   color: var(--text-muted);
   font-size: 1.05rem;
+  font-weight: 300;
+  line-height: 1.6;
 }
 
 .card {
   background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-cards);
+  box-shadow: none;
+  transition: border-color 0.2s ease;
 }
 
 .card:hover {
-  border-color: #c9d6ea;
+  border-color: var(--border);
+}
+
+/* Soft accent fill — chips, CTAs, social buttons */
+.accent-soft-surface {
+  border: 1px solid var(--accent-border);
+  background: var(--accent-soft);
+  color: var(--color-lavender-mist);
+  font-weight: 500;
+}
+
+a.accent-soft-surface,
+button.accent-soft-surface {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+a.accent-soft-surface:hover,
+a.accent-soft-surface:focus-visible,
+button.accent-soft-surface:hover:not(:disabled),
+button.accent-soft-surface:focus-visible:not(:disabled) {
+  background: var(--accent-medium);
+  border-color: var(--accent-border-hover);
+}
+
+/* Shared frosted panel — skills cards + contact frame */
+.liquid-glass {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid rgba(247, 249, 250, 0.2);
+  border-radius: var(--radius-cards);
+  background:
+    linear-gradient(
+      155deg,
+      rgba(247, 249, 250, 0.14) 0%,
+      rgba(247, 249, 250, 0.04) 42%,
+      var(--accent-soft) 100%
+    ),
+    rgba(18, 18, 18, 0.55);
+  backdrop-filter: blur(22px) saturate(1.45);
+  -webkit-backdrop-filter: blur(22px) saturate(1.45);
   box-shadow:
-    0 22px 50px rgba(15, 23, 42, 0.1),
-    0 0 0 1px rgba(37, 99, 235, 0.08);
+    inset 0 1px 0 rgba(247, 249, 250, 0.28),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+    0 18px 44px rgba(0, 0, 0, 0.32);
+}
+
+.liquid-glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(
+      ellipse 95% 60% at 16% -8%,
+      rgba(247, 249, 250, 0.42) 0%,
+      rgba(247, 249, 250, 0.08) 34%,
+      transparent 58%
+    ),
+    radial-gradient(ellipse 80% 55% at 100% 110%, var(--accent-medium) 0%, transparent 58%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.liquid-glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(247, 249, 250, 0.08) 42%,
+    transparent 58%
+  );
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.liquid-glass > * {
+  position: relative;
+  z-index: 1;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .liquid-glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background:
+      linear-gradient(155deg, rgba(247, 249, 250, 0.1) 0%, var(--accent-soft) 100%),
+      var(--bg-elevated);
+  }
 }
 
 .sr-only {
@@ -151,4 +431,11 @@ textarea {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border: 0;
+}
+
+.hairline {
+  height: 1px;
+  background: rgba(247, 249, 250, 0.12);
+  border: 0;
+  margin: 0;
 }

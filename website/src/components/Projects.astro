@@ -7,131 +7,259 @@ const withBase = (path: string) => `${base}${path.replace(/^\//, '')}`
 const projects = (await getCollection('projects')).sort(
   (a, b) => a.data.order - b.data.order,
 )
+
+const projectCount = Math.max(projects.length, 1)
 ---
 
-<section id="projects" class="section" aria-labelledby="projects-title">
-  <div class="container">
-    <p class="section-label">Проекты</p>
+<section
+  id="projects"
+  class="section projects-section"
+  aria-labelledby="projects-title"
+>
+  <div class="container projects-intro" data-reveal>
+    <p class="section-stamp" data-split-flap aria-hidden="true">PROJECTS</p>
     <h2 id="projects-title" class="section-title">
       Проекты, над которыми работаю сейчас, и те, что уже реализовал.
     </h2>
+  </div>
 
-    <div class="projects-grid">
-      {
-        projects.map((project) => (
-          <article class="project-card card">
-            <div class="project-media">
-              {
-                project.data.image ? (
+  <div
+    class="projects-pin"
+    data-projects-pin
+    data-projects-count={projectCount}
+    style={`--projects-count: ${projectCount}`}
+  >
+    <div class="projects-stage" data-projects-stage>
+      <div class="projects-viewport">
+        {
+          projects.map((project, index) => (
+            <article
+              class="project-slide"
+              data-project-slide
+              data-index={index}
+              aria-hidden={index === 0 ? 'false' : 'true'}
+            >
+              <div class="project-visual" aria-hidden="true">
+                {project.data.image ? (
                   <img
                     src={withBase(project.data.image)}
-                    alt={`Превью проекта ${project.data.title}`}
-                    loading="lazy"
-                    width="640"
-                    height="360"
+                    alt=""
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    width="1280"
+                    height="720"
                   />
                 ) : (
-                  <div class="project-placeholder" aria-hidden="true" />
-                )
-              }
-            </div>
-            <div class="project-body">
-              <div class="project-meta">
-                <span>{project.data.year}</span>
+                  <div class="project-placeholder" />
+                )}
               </div>
-              <h3>
-                {
-                  project.data.link ? (
+
+              <div class="project-scrim" aria-hidden="true" />
+
+              <div class="project-copy">
+                <div class="project-meta">
+                  <span>{project.data.year}</span>
+                </div>
+                <h3>
+                  {project.data.link ? (
                     <a
                       href={project.data.link}
                       target="_blank"
                       rel="noreferrer noopener"
                       class="project-title-link"
+                      tabindex={index === 0 ? 0 : -1}
                     >
                       {project.data.title}
                     </a>
                   ) : (
                     project.data.title
-                  )
-                }
-              </h3>
-              <p>{project.data.description}</p>
-              <ul class="tags">
-                {project.data.tags.map((tag) => (
-                  <li>{tag}</li>
-                ))}
-              </ul>
-              {
-                project.data.link ? (
-                  <a href={project.data.link} target="_blank" rel="noreferrer noopener">
+                  )}
+                </h3>
+                <p>{project.data.description}</p>
+                <ul class="tags">
+                  {project.data.tags.map((tag) => (
+                    <li>{tag}</li>
+                  ))}
+                </ul>
+                {project.data.link ? (
+                  <a
+                    href={project.data.link}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    class="project-case-link"
+                    tabindex={index === 0 ? 0 : -1}
+                  >
                     Смотреть кейс →
                   </a>
-                ) : null
-              }
-            </div>
-          </article>
-        ))
+                ) : null}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+
+      {
+        projectCount > 1 ? (
+          <nav class="projects-progress" data-projects-progress aria-label="Прогресс по проектам">
+            {projects.map((project, index) => (
+              <button
+                type="button"
+                class:list={['progress-mark', { 'is-active': index === 0 }]}
+                data-progress-mark
+                data-index={index}
+                aria-label={`Перейти к проекту: ${project.data.title}`}
+                aria-current={index === 0 ? 'true' : undefined}
+              >
+                <span class="progress-bar" aria-hidden="true" />
+              </button>
+            ))}
+          </nav>
+        ) : null
       }
     </div>
   </div>
 </section>
 
 <style>
-  .projects-grid {
-    display: grid;
-    gap: 1.5rem;
+  .projects-section {
+    padding-bottom: 0;
   }
 
-  .project-card {
+  .projects-intro {
+    margin-bottom: 2.5rem;
+  }
+
+  .projects-pin {
+    --projects-count: 1;
+    position: relative;
+    height: calc(var(--projects-count) * 100dvh);
+    min-height: calc(var(--projects-count) * 100vh);
+  }
+
+  .projects-stage {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    min-height: 100vh;
     overflow: hidden;
+    isolation: isolate;
+    box-sizing: border-box;
+  }
+
+  .projects-viewport {
+    position: relative;
+    width: var(--container);
+    max-width: 100%;
+    height: 100%;
+    margin-inline: auto;
+    padding-inline: 1rem;
+    padding-block: clamp(0.75rem, 2vh, 1.25rem);
+    box-sizing: border-box;
+  }
+
+  .project-slide {
+    position: absolute;
+    inset: 0;
     display: grid;
-    min-width: 0;
-    border-color: var(--border-subtle);
+    align-content: end;
+    overflow: hidden;
+    border-radius: var(--radius-cards);
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate3d(0, 14%, 0) scale(1.09);
+    transform-origin: center center;
+    will-change: transform, opacity, filter;
+    backface-visibility: hidden;
   }
 
-  .project-media {
-    aspect-ratio: 16 / 9;
-    background: linear-gradient(135deg, var(--accent-soft), transparent);
-    border-bottom: 1px solid var(--border);
+  /* Visible before JS hydrates */
+  .project-slide[data-index='0'] {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    pointer-events: auto;
+    z-index: 2;
   }
 
-  .project-media img,
+  .project-slide.is-interactive {
+    pointer-events: auto;
+  }
+
+  .project-visual {
+    position: absolute;
+    inset: 0;
+    background: #121212;
+  }
+
+  .project-visual img,
   .project-placeholder {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center top;
   }
 
   .project-placeholder {
     background:
-      linear-gradient(135deg, var(--accent-medium), rgba(15, 23, 42, 0.05)),
-      var(--bg-elevated);
+      radial-gradient(ellipse at 30% 20%, var(--accent-soft), transparent 55%),
+      #121212;
   }
 
-  .project-body {
+  .project-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--page-bg) 96%, transparent) 0%,
+      color-mix(in srgb, var(--page-bg) 88%, transparent) 22%,
+      color-mix(in srgb, var(--page-bg) 62%, transparent) 48%,
+      color-mix(in srgb, var(--page-bg) 22%, transparent) 68%,
+      transparent 86%
+    );
+    pointer-events: none;
+  }
+
+  .project-copy {
+    position: relative;
+    z-index: 1;
     display: grid;
     gap: 0.75rem;
     min-width: 0;
-    padding: 1.5rem;
+    max-width: min(36rem, 100%);
+    padding: clamp(1.25rem, 4vw, 2.5rem);
+    border-radius: calc(var(--radius-cards) - 4px);
+    background: linear-gradient(
+      to top,
+      color-mix(in srgb, var(--page-bg) 72%, transparent) 0%,
+      color-mix(in srgb, var(--page-bg) 38%, transparent) 70%,
+      transparent 100%
+    );
+    text-shadow: 0 1px 2px color-mix(in srgb, var(--page-bg) 70%, transparent);
   }
 
   .project-meta {
     display: flex;
     gap: 0.75rem;
     align-items: center;
-    color: var(--text-muted);
-    font-size: 0.875rem;
-    font-weight: 600;
+    color: var(--color-soft-white);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.82;
   }
 
   .project-meta span:first-child {
-    color: var(--accent);
+    color: var(--color-soft-white);
   }
 
-  .project-body h3 {
+  .project-copy h3 {
     margin: 0;
-    font-size: 1.35rem;
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+    font-weight: 400;
     letter-spacing: -0.02em;
+    color: var(--color-almost-white);
   }
 
   .project-title-link {
@@ -142,14 +270,17 @@ const projects = (await getCollection('projects')).sort(
 
   .project-title-link:hover,
   .project-title-link:focus-visible {
-    color: var(--accent-strong);
+    color: var(--color-lavender-mist);
     outline: none;
   }
 
-  .project-body p {
+  .project-copy p {
     margin: 0;
-    color: var(--text-muted);
+    color: var(--color-soft-white);
+    font-weight: 400;
+    line-height: 1.55;
     overflow-wrap: break-word;
+    opacity: 0.92;
   }
 
   .tags {
@@ -163,39 +294,146 @@ const projects = (await getCollection('projects')).sort(
 
   .tags li {
     padding: 0.35rem 0.7rem;
-    border-radius: 999px;
-    border: 1px solid var(--border);
-    background: #f8fafc;
-    font-size: 0.8rem;
-    color: #334155;
+    border-radius: var(--radius-small);
+    border: 1px solid var(--accent-border);
+    background: var(--accent-soft);
+    font-size: 0.75rem;
+    color: var(--color-lavender-mist);
     font-weight: 500;
+    text-shadow: none;
   }
 
-  .project-body a:not(.project-title-link) {
+  .project-case-link {
     width: fit-content;
     margin-top: 0.25rem;
-    font-weight: 600;
-    color: var(--accent-strong);
+    font-weight: 400;
+    color: var(--color-almost-white);
     text-decoration: none;
-    transition: color 0.2s ease, transform 0.2s ease;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-almost-white) 55%, transparent);
+    transition:
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
 
-  .project-body a:not(.project-title-link):hover,
-  .project-body a:not(.project-title-link):focus-visible {
-    color: var(--accent);
-    transform: translateX(2px);
+  .project-case-link:hover,
+  .project-case-link:focus-visible {
+    color: var(--color-lavender-mist);
+    border-bottom-color: var(--color-lavender-mist);
     outline: none;
   }
 
-  @media (min-width: 768px) {
-    .projects-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+  .projects-progress {
+    position: absolute;
+    top: 50%;
+    right: max(0.75rem, calc((100% - var(--container)) / 2 + 0.25rem));
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    align-items: center;
+    transform: translateY(-50%);
+  }
+
+  .progress-mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 0.2rem;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    color: inherit;
+  }
+
+  .progress-bar {
+    display: block;
+    width: 2px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--color-almost-white);
+    opacity: 0.28;
+    transition:
+      height 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.45s ease;
+  }
+
+  .progress-mark.is-active .progress-bar,
+  .progress-mark[aria-current='true'] .progress-bar {
+    width: 3px;
+    height: 28px;
+    opacity: 0.92;
+  }
+
+  .progress-mark:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Reduced-motion / no-JS fallback: stacked cards */
+  .projects-pin[data-projects-static='1'] {
+    height: auto;
+    min-height: 0;
+  }
+
+  .projects-pin[data-projects-static='1'] .projects-stage {
+    position: relative;
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .projects-pin[data-projects-static='1'] .projects-viewport {
+    display: grid;
+    gap: 1.5rem;
+    height: auto;
+    padding-block: 0 7.5rem;
+  }
+
+  .projects-pin[data-projects-static='1'] .project-slide {
+    position: relative;
+    inset: auto;
+    min-height: min(70dvh, 36rem);
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+    pointer-events: auto !important;
+    will-change: auto;
+  }
+
+  .projects-pin[data-projects-static='1'] .projects-progress {
+    display: none;
+  }
+
+  @media (max-width: 767px) {
+    .projects-progress {
+      right: 0.5rem;
+    }
+
+    .project-copy {
+      max-width: 100%;
+      padding-inline-end: 2rem;
+    }
+
+    .progress-bar {
+      height: 12px;
+    }
+
+    .progress-mark.is-active .progress-bar,
+    .progress-mark[aria-current='true'] .progress-bar {
+      height: 22px;
     }
   }
 
-  @media (min-width: 1100px) {
-    .projects-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+  @media (prefers-reduced-motion: reduce) {
+    .project-slide {
+      will-change: auto;
+    }
+
+    .progress-bar {
+      transition: none;
     }
   }
 </style>

@@ -3,8 +3,8 @@ import { skillGroups } from '../data/skills'
 ---
 
 <section id="skills" class="section" aria-labelledby="skills-title">
-  <div class="container">
-    <p class="section-label">Технологии</p>
+  <div class="container" data-reveal>
+    <p class="section-stamp" data-split-flap aria-hidden="true">STACK</p>
     <h2 id="skills-title" class="section-title">Стек и инструменты</h2>
     <p class="section-lead">
       Технологии, которые использую в проектах, и направления, которые развиваю сейчас.
@@ -13,7 +13,7 @@ import { skillGroups } from '../data/skills'
     <div class="skills-grid">
       {
         skillGroups.map((group) => (
-          <article class="skill-card card">
+          <article class="skill-card liquid-glass" data-tilt data-tilt-dim data-spotlight>
             <h3>{group.title}</h3>
             <ul>
               {group.items.map((item) => (
@@ -31,17 +31,21 @@ import { skillGroups } from '../data/skills'
   .skills-grid {
     display: grid;
     gap: 1rem;
+    perspective: 900px;
   }
 
   .skill-card {
-    padding: 1.5rem;
-    border-color: var(--border-subtle);
+    padding: var(--card-padding);
+    transform-style: preserve-3d;
+    transform: rotateX(0deg) rotateY(0deg) scale(1);
+    will-change: transform, filter;
   }
 
   .skill-card h3 {
     margin: 0 0 1rem;
     font-size: 1.12rem;
-    color: #1e3a8a;
+    font-weight: 400;
+    color: var(--color-almost-white);
     letter-spacing: -0.01em;
   }
 
@@ -56,17 +60,23 @@ import { skillGroups } from '../data/skills'
 
   .skill-card li {
     padding: 0.45rem 0.8rem;
-    border-radius: 999px;
-    border: 1px solid #bfdbfe;
-    background: #eff6ff;
-    color: #1e40af;
-    font-size: 0.9rem;
-    font-weight: 600;
+    border-radius: var(--radius-small);
+    border: 1px solid var(--accent-border);
+    background: var(--accent-soft);
+    color: var(--color-lavender-mist);
+    font-size: 0.875rem;
+    font-weight: 500;
   }
 
   @media (min-width: 768px) {
     .skills-grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skill-card {
+      will-change: auto;
     }
   }
 </style>

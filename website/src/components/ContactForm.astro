@@ -7,26 +7,27 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
 ---
 
 <section id="contact" class="section" aria-labelledby="contact-title">
-  <div class="container contact-grid">
+  <div class="container contact-grid" data-reveal>
     <div>
-      <p class="section-label">Контакты</p>
+      <p class="section-stamp" data-split-flap aria-hidden="true">CONTACT</p>
       <h2 id="contact-title" class="section-title">Связаться</h2>
       <p class="section-lead">
         Если у вас есть вопросы, предложения или вы хотите обсудить сотрудничество — буду рад вашему сообщению.
       </p>
-      <div class="contact-direct card">
+      <div class="contact-direct">
         <p>Прямой email</p>
-        <a href={`mailto:${profile.email}`}>{profile.email}</a>
+        <a href={`mailto:${profile.email}`} data-magnetic>{profile.email}</a>
       </div>
     </div>
 
     {
       formspreeEndpoint ? (
         <form
-          class="contact-form card"
+          class="contact-form liquid-glass"
           id="contact-form"
           method="post"
           action={formspreeEndpoint}
+          data-spotlight
           novalidate
         >
           <div class="field">
@@ -44,11 +45,11 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
             <textarea id="message" name="message" rows="5" required minlength="10"></textarea>
           </div>
 
-          <button class="submit" type="submit">Отправить</button>
+          <button class="submit" type="submit" data-magnetic>Отправить</button>
           <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
         </form>
       ) : (
-        <div class="contact-form card contact-form-fallback" role="status">
+        <div class="contact-form contact-form-fallback liquid-glass" role="status">
           <p>
             Форма скоро будет подключена. Пока напишите напрямую на
             <a href={`mailto:${profile.email}`}>{profile.email}</a>.
@@ -122,38 +123,37 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
   }
 
   .contact-direct {
-    padding: 1.25rem 1.5rem;
-    border-color: var(--border-subtle);
-    background: var(--bg);
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--border-subtle);
   }
 
   .contact-direct p {
     margin: 0 0 0.35rem;
-    color: var(--text-muted);
-    font-size: 0.875rem;
+    color: var(--color-ash);
+    font-size: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.12em;
   }
 
   .contact-direct a {
     font-size: 1.1rem;
-    font-weight: 700;
+    font-weight: 400;
     text-decoration: none;
-    color: var(--accent-strong);
-    transition: color 0.2s ease;
+    color: var(--color-almost-white);
+    border-bottom: 1px solid rgba(247, 249, 250, 0.3);
+    transition: border-color 0.2s ease;
   }
 
   .contact-direct a:hover,
   .contact-direct a:focus-visible {
-    color: var(--accent);
+    border-bottom-color: var(--color-almost-white);
     outline: none;
   }
 
   .contact-form {
     display: grid;
     gap: 1rem;
-    padding: 1.75rem;
-    border-color: var(--border-subtle);
+    padding: var(--card-padding);
   }
 
   .contact-form-fallback p {
@@ -163,8 +163,10 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
   }
 
   .contact-form-fallback a {
-    color: var(--accent-strong);
-    font-weight: 600;
+    color: var(--color-almost-white);
+    font-weight: 400;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
 
   .field {
@@ -173,9 +175,9 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
   }
 
   label {
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--accent);
+    font-weight: 400;
+    font-size: 0.875rem;
+    color: var(--color-almost-white);
   }
 
   input,
@@ -183,43 +185,39 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
     width: 100%;
     padding: 0.85rem 1rem;
     border: 1px solid var(--border);
-    border-radius: 0.85rem;
+    border-radius: var(--radius-buttons);
     background: var(--bg-input);
     color: var(--text);
-    transition:
-      border-color 0.2s ease,
-      box-shadow 0.2s ease;
+    transition: border-color 0.2s ease;
   }
 
   input:focus-visible,
   textarea:focus-visible {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
+    border-color: var(--color-almost-white);
     outline: none;
   }
 
   .submit {
     min-height: 3rem;
-    border: 1px solid var(--accent);
-    border-radius: 999px;
-    background: var(--accent);
-    color: var(--accent-on);
-    font-weight: 700;
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius-buttons);
+    background: var(--accent-soft);
+    color: var(--color-lavender-mist);
+    font-weight: 500;
     cursor: pointer;
     transition:
       background 0.2s ease,
-      transform 0.15s ease;
+      border-color 0.2s ease;
   }
 
   .submit:hover:not(:disabled) {
-    background: var(--accent-strong);
-    border-color: var(--accent-strong);
-    transform: translateY(-1px);
+    background: var(--accent-medium);
+    border-color: var(--accent-border-hover);
   }
 
   button:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px var(--accent-soft);
+    outline: 2px solid var(--color-lavender-mist);
+    outline-offset: 2px;
   }
 
   .submit:disabled {
@@ -234,8 +232,8 @@ const formspreeEndpoint = formspreeId ? `https://formspree.io/f/${formspreeId}` 
   }
 
   .form-status.is-success {
-    color: #1d4ed8;
-    font-weight: 600;
+    color: var(--color-lavender-mist);
+    font-weight: 400;
   }
 
   .form-status.is-error {

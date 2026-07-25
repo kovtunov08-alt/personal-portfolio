@@ -10,13 +10,11 @@ const socialLinks = [
   { key: 'telegram', label: 'Telegram', href: profile.social.telegram },
 ] as const
 
-const isVariantB = profile.heroVariant === 'B'
+const [firstName, ...restName] = profile.name.split(' ')
+const lastName = restName.join(' ')
 ---
 
-<section
-  class:list={['hero-landing', isVariantB ? 'hero-landing-b' : 'hero-landing-a']}
-  aria-labelledby="hero-title"
->
+<section class="hero-landing" aria-labelledby="hero-title">
   <div class="container hero-shell">
     <div class="hero-content">
       <nav class="hero-nav" aria-label="Разделы первого экрана">
@@ -28,18 +26,17 @@ const isVariantB = profile.heroVariant === 'B'
       </nav>
 
       <div class="hero-content-body">
-        <p class="hero-eyebrow">
-          {isVariantB ? 'Vibecoding' : 'VIBECODING'}
-        </p>
+        <p class="hero-eyebrow" data-split-flap>VIBE CODING</p>
         <h1 id="hero-title" class="hero-title">
-          {profile.name}
+          <span class="hero-title-first">{firstName}</span>
+          {lastName ? <span class="hero-title-last">{lastName}</span> : null}
         </h1>
         <p class="hero-role">{profile.title}</p>
         <p class="hero-lead">{profile.tagline}</p>
 
         <div class="hero-actions" role="group" aria-label="Основные действия">
-          <a class="btn btn-primary" href="#projects">Проекты</a>
-          <a class="btn btn-secondary" href="#contact">Связаться</a>
+          <a class="btn btn-primary accent-soft-surface" href="#projects" data-magnetic>Проекты</a>
+          <a class="btn btn-secondary" href="#contact" data-magnetic>Связаться</a>
         </div>
 
         <div class="hero-meta">
@@ -50,7 +47,7 @@ const isVariantB = profile.heroVariant === 'B'
         <nav class="hero-socials" aria-label="Социальные сети">
           {
             socialLinks.map((link) => (
-              <a href={link.href} target="_blank" rel="noreferrer noopener">
+              <a href={link.href} target="_blank" rel="noreferrer noopener" data-magnetic>
                 {link.label}
               </a>
             ))
@@ -59,17 +56,19 @@ const isVariantB = profile.heroVariant === 'B'
       </div>
     </div>
 
-    <figure class="hero-visual" aria-hidden="true">
-      <div class="hero-visual-frame">
-        <img
-          class="hero-portrait"
-          src={portraitSrc}
-          alt=""
-          width={profile.portraitWidth}
-          height={profile.portraitHeight}
-          decoding="async"
-          fetchpriority="high"
-        />
+    <figure class="hero-visual">
+      <div class="hero-visual-stage">
+        <div class="hero-visual-frame" data-tilt>
+          <img
+            class="hero-portrait"
+            src={portraitSrc}
+            alt=""
+            width={profile.portraitWidth}
+            height={profile.portraitHeight}
+            decoding="async"
+            fetchpriority="high"
+          />
+        </div>
       </div>
     </figure>
   </div>
@@ -82,180 +81,105 @@ const isVariantB = profile.heroVariant === 'B'
     min-height: 100svh;
     min-height: 100dvh;
     display: flex;
-    align-items: center;
-    padding-block: clamp(4.4rem, 7.2vw, 5.8rem) clamp(3rem, 6vw, 4rem);
+    align-items: flex-start;
+    padding-block: clamp(1.25rem, 2.5vw, 1.75rem) clamp(1.5rem, 3.5vw, 2.5rem);
     background:
-      radial-gradient(circle at 10% 12%, rgba(37, 99, 235, 0.14), transparent 36%),
-      radial-gradient(circle at 88% 92%, rgba(148, 163, 184, 0.2), transparent 35%),
-      #f8fafc;
-    --hero-nav-border: #cbd5e1;
-    --hero-nav-text: #1e293b;
-    --hero-nav-bg: rgba(255, 255, 255, 0.72);
-    --hero-nav-border-hover: #2563eb;
-    --hero-nav-bg-hover: #eff6ff;
-    --hero-nav-text-hover: #1d4ed8;
-    --hero-eyebrow: #2563eb;
-    --hero-title: #0f172a;
-    --hero-role: #334155;
-    --hero-lead: #475569;
-    --hero-meta: #64748b;
-    --hero-meta-link: #334155;
-    --hero-meta-link-hover: #1d4ed8;
-    --hero-social: #334155;
-    --hero-social-hover: #1d4ed8;
-    --btn-primary-bg: #2563eb;
-    --btn-primary-border: #2563eb;
-    --btn-primary-text: #f8fafc;
-    --btn-primary-bg-hover: #1d4ed8;
-    --btn-primary-border-hover: #1d4ed8;
-    --btn-secondary-bg: transparent;
-    --btn-secondary-border: #cbd5e1;
-    --btn-secondary-text: #1e293b;
-    --btn-secondary-bg-hover: #eff6ff;
-    --btn-secondary-border-hover: #2563eb;
-    --btn-secondary-text-hover: #1d4ed8;
-    --hero-frame-border: #e2e8f0;
-    --hero-frame-bg:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(248, 250, 252, 0.8)),
-      #f8fafc;
-    --hero-frame-shadow:
-      0 22px 44px rgba(15, 23, 42, 0.1),
-      0 1px 0 rgba(255, 255, 255, 0.8) inset;
-  }
-
-  .hero-landing-a {
-    background:
-      radial-gradient(circle at 10% 12%, rgba(37, 99, 235, 0.14), transparent 36%),
-      radial-gradient(circle at 88% 92%, rgba(148, 163, 184, 0.2), transparent 35%),
-      #f8fafc;
-  }
-
-  .hero-landing-b {
-    background:
-      radial-gradient(circle at 14% 18%, rgba(34, 211, 238, 0.2), transparent 36%),
-      radial-gradient(circle at 88% 82%, rgba(167, 139, 250, 0.22), transparent 35%),
-      linear-gradient(160deg, #0b1220 0%, #111827 55%, #0f172a 100%);
-    --hero-nav-border: rgba(148, 163, 184, 0.36);
-    --hero-nav-text: #e2e8f0;
-    --hero-nav-bg: rgba(30, 41, 59, 0.5);
-    --hero-nav-border-hover: #22d3ee;
-    --hero-nav-bg-hover: rgba(8, 47, 73, 0.55);
-    --hero-nav-text-hover: #67e8f9;
-    --hero-eyebrow: #67e8f9;
-    --hero-title: #f8fafc;
-    --hero-role: #cbd5e1;
-    --hero-lead: #94a3b8;
-    --hero-meta: #94a3b8;
-    --hero-meta-link: #e2e8f0;
-    --hero-meta-link-hover: #67e8f9;
-    --hero-social: #cbd5e1;
-    --hero-social-hover: #67e8f9;
-    --btn-primary-bg: #22d3ee;
-    --btn-primary-border: #22d3ee;
-    --btn-primary-text: #082f49;
-    --btn-primary-bg-hover: #67e8f9;
-    --btn-primary-border-hover: #67e8f9;
-    --btn-secondary-bg: rgba(15, 23, 42, 0.5);
-    --btn-secondary-border: rgba(148, 163, 184, 0.45);
-    --btn-secondary-text: #e2e8f0;
-    --btn-secondary-bg-hover: rgba(8, 47, 73, 0.45);
-    --btn-secondary-border-hover: #22d3ee;
-    --btn-secondary-text-hover: #67e8f9;
-    --hero-frame-border: rgba(148, 163, 184, 0.25);
-    --hero-frame-bg:
-      linear-gradient(180deg, rgba(15, 23, 42, 0.32), rgba(15, 23, 42, 0.7)),
-      #0f172a;
-    --hero-frame-shadow:
-      0 28px 56px rgba(2, 8, 23, 0.58),
-      0 0 0 1px rgba(34, 211, 238, 0.08) inset;
+      radial-gradient(ellipse 55% 45% at 78% 28%, rgba(175, 80, 255, 0.14), transparent 70%),
+      radial-gradient(ellipse 40% 35% at 12% 80%, rgba(225, 189, 255, 0.05), transparent 65%),
+      var(--color-near-black);
   }
 
   .hero-shell {
     width: var(--container);
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 0.82fr);
+    grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.95fr);
     gap: clamp(2rem, 5vw, 4rem);
-    align-items: start;
+    align-items: center;
   }
 
   .hero-nav {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem 0.75rem;
-    margin-bottom: 1.1rem;
+    gap: 0.35rem 1.25rem;
+    margin-bottom: 1rem;
   }
 
   .hero-nav a {
     display: inline-flex;
     align-items: center;
-    min-height: 2.5rem;
-    padding: 0 0.9rem;
-    border-radius: 999px;
-    border: 1px solid var(--hero-nav-border);
-    color: var(--hero-nav-text);
-    background: var(--hero-nav-bg);
+    padding: 0.65rem 0;
+    color: var(--color-ash);
     text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    border-bottom: 1px solid transparent;
     transition:
-      border-color 0.2s ease,
-      background-color 0.2s ease,
-      color 0.2s ease;
+      color 0.2s ease,
+      border-color 0.2s ease;
   }
 
   .hero-nav a:hover,
   .hero-nav a:focus-visible {
-    border-color: var(--hero-nav-border-hover);
-    background: var(--hero-nav-bg-hover);
-    color: var(--hero-nav-text-hover);
+    color: var(--color-almost-white);
+    border-bottom-color: rgba(247, 249, 250, 0.35);
     outline: none;
   }
 
   .hero-content {
-    max-width: 36rem;
-  }
-
-  .hero-content-body {
-    margin-top: 1.2rem;
+    max-width: 38rem;
   }
 
   .hero-eyebrow {
-    margin: 0 0 0.75rem;
-    color: var(--hero-eyebrow);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.11em;
-    text-transform: uppercase;
+    margin: 0 0 0.35rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--color-almost-white);
   }
 
   .hero-title {
     margin: 0;
-    font-size: clamp(2rem, 5.3vw, 4rem);
-    line-height: 1.04;
-    letter-spacing: -0.03em;
-    color: var(--hero-title);
+    display: flex;
+    flex-direction: column;
+    gap: 0.1em;
+    font-size: clamp(2.25rem, 5.5vw, 4rem);
+    font-weight: 300;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    color: var(--color-almost-white);
+  }
+
+  .hero-title-last {
+    font-weight: 400;
   }
 
   .hero-role {
-    margin: 1rem 0 0;
-    color: var(--hero-role);
-    font-size: clamp(1rem, 2.2vw, 1.3rem);
-    font-weight: 600;
+    margin: 1.1rem 0 0;
+    color: var(--color-steel);
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-weight: 300;
+    letter-spacing: -0.01em;
   }
 
   .hero-lead {
-    margin: 1rem 0 0;
-    color: var(--hero-lead);
-    font-size: clamp(1rem, 1.8vw, 1.14rem);
-    line-height: 1.68;
+    margin: 1.1rem 0 0;
+    color: rgba(247, 249, 250, 0.72);
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    font-weight: 300;
+    line-height: 1.55;
   }
 
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.8rem;
-    margin-top: 1.85rem;
+    gap: 0.75rem;
+    margin-top: 2rem;
   }
 
   .btn {
@@ -263,68 +187,67 @@ const isVariantB = profile.heroVariant === 'B'
     align-items: center;
     justify-content: center;
     min-height: 2.9rem;
-    padding: 0.55rem 1.25rem;
-    border-radius: 0.8rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius-buttons);
     border: 1px solid transparent;
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 400;
     text-decoration: none;
     transition:
-      transform 0.2s ease,
       background-color 0.2s ease,
       color 0.2s ease,
       border-color 0.2s ease;
   }
 
-  .btn:hover,
   .btn:focus-visible {
-    transform: translateY(-1px);
-    outline: none;
+    outline: 2px solid var(--color-lavender-mist);
+    outline-offset: 2px;
   }
 
+  /* Soft accent — matches stack chips / submit */
   .btn-primary {
-    background: var(--btn-primary-bg);
-    border-color: var(--btn-primary-border);
-    color: var(--btn-primary-text);
+    background: var(--accent-soft);
+    border-color: var(--accent-border);
+    color: var(--color-lavender-mist);
+    font-weight: 500;
   }
 
   .btn-primary:hover,
   .btn-primary:focus-visible {
-    background: var(--btn-primary-bg-hover);
-    border-color: var(--btn-primary-border-hover);
+    background: var(--accent-medium);
+    border-color: var(--accent-border-hover);
   }
 
   .btn-secondary {
-    background: var(--btn-secondary-bg);
-    border-color: var(--btn-secondary-border);
-    color: var(--btn-secondary-text);
+    background: var(--color-near-black);
+    border-color: var(--color-almost-white);
+    color: var(--color-almost-white);
   }
 
   .btn-secondary:hover,
   .btn-secondary:focus-visible {
-    border-color: var(--btn-secondary-border-hover);
-    color: var(--btn-secondary-text-hover);
-    background: var(--btn-secondary-bg-hover);
+    background: rgba(247, 249, 250, 0.06);
   }
 
   .hero-meta {
-    margin-top: 1.4rem;
+    margin-top: 1.5rem;
     display: flex;
     flex-wrap: wrap;
     gap: 0.6rem 1.2rem;
-    color: var(--hero-meta);
-    font-size: 0.94rem;
+    color: var(--color-ash);
+    font-size: 0.875rem;
   }
 
   .hero-meta a {
-    color: var(--hero-meta-link);
+    color: var(--color-almost-white);
     text-decoration: underline;
     text-underline-offset: 0.2em;
+    text-decoration-color: rgba(247, 249, 250, 0.35);
   }
 
   .hero-meta a:hover,
   .hero-meta a:focus-visible {
-    color: var(--hero-meta-link-hover);
+    text-decoration-color: var(--color-almost-white);
     outline: none;
   }
 
@@ -332,19 +255,19 @@ const isVariantB = profile.heroVariant === 'B'
     margin-top: 1rem;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem 0.7rem;
+    gap: 0.35rem 1rem;
   }
 
   .hero-socials a {
-    color: var(--hero-social);
+    color: var(--color-steel);
     text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.875rem;
+    font-weight: 500;
   }
 
   .hero-socials a:hover,
   .hero-socials a:focus-visible {
-    color: var(--hero-social-hover);
+    color: var(--color-almost-white);
     text-decoration: underline;
     text-underline-offset: 0.22em;
     outline: none;
@@ -353,16 +276,29 @@ const isVariantB = profile.heroVariant === 'B'
   .hero-visual {
     margin: 0;
     justify-self: end;
-    width: min(100%, 32rem);
+    width: min(100%, 28rem, calc((100dvh - 3.5rem) * 683 / 1024));
+  }
+
+  .hero-visual-stage {
+    perspective: 900px;
   }
 
   .hero-visual-frame {
-    border-radius: 1.4rem;
-    border: 1px solid var(--hero-frame-border);
-    background: var(--hero-frame-bg);
-    box-shadow: var(--hero-frame-shadow);
+    border-radius: var(--radius-cards);
+    border: 1px solid rgba(247, 249, 250, 0.18);
+    background: #121212;
     overflow: hidden;
-    aspect-ratio: 4 / 5;
+    /* Matches portrait.png (683×1024) so the photo is not cropped */
+    aspect-ratio: 683 / 1024;
+    width: 100%;
+    transform-style: preserve-3d;
+    transform: rotateX(0deg) rotateY(0deg) scale(1);
+    transition: box-shadow 0.25s ease;
+    will-change: transform;
+  }
+
+  .hero-visual-frame:hover {
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
   }
 
   .hero-portrait {
@@ -371,12 +307,24 @@ const isVariantB = profile.heroVariant === 'B'
     height: 100%;
     object-fit: cover;
     object-position: center center;
+    filter: saturate(0.92) contrast(1.04);
+    transform: translateZ(18px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-visual-frame {
+      will-change: auto;
+    }
+
+    .hero-portrait {
+      transform: none;
+    }
   }
 
   @media (max-width: 960px) {
     .hero-shell {
       grid-template-columns: 1fr;
-      gap: 2rem;
+      gap: 2.5rem;
     }
 
     .hero-content {
@@ -385,23 +333,18 @@ const isVariantB = profile.heroVariant === 'B'
 
     .hero-visual {
       justify-self: start;
-      width: min(100%, 26rem);
+      width: min(100%, 26rem, calc((100dvh - 3.5rem) * 683 / 1024));
     }
   }
 
   @media (max-width: 640px) {
     .hero-landing {
-      padding-block: 4.3rem 2.5rem;
+      padding-block: 1.25rem 2rem;
+      min-height: auto;
     }
 
-    .hero-nav {
-      gap: 0.45rem;
-    }
-
-    .hero-nav a {
-      min-height: 2.2rem;
-      padding: 0 0.72rem;
-      font-size: 0.82rem;
+    .hero-visual {
+      width: min(100%, 26rem);
     }
   }
 </style>
